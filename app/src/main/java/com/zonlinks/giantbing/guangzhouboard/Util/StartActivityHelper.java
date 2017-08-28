@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import classroom.zonlinks.com.classroom.Activity.MainActivity;
-import classroom.zonlinks.com.classroom.Activity.Splash_activity;
+import com.zonlinks.giantbing.guangzhouboard.Activity.MainActivity;
+
 
 /*
  * Created by giant on 2017/3/17.
@@ -23,10 +23,10 @@ public class StartActivityHelper {
         //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent, bundle);
     }
-    public static void startSplashTraslate(Context context , Bundle bundle){
-        Intent intent = new Intent(context, Splash_activity.class) ;
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent, bundle);
-    }
+//    public static void startSplashTraslate(Context context , Bundle bundle){
+//        Intent intent = new Intent(context, Splash_activity.class) ;
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        context.startActivity(intent, bundle);
+//    }
 
 }

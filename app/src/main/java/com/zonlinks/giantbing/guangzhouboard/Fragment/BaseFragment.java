@@ -36,7 +36,7 @@ public class BaseFragment extends Fragment {
     }
 
 //    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {0
 //        super.onActivityResult(requestCode, resultCode, data);
 ////        if (resultCode != RESULT_OK) {
 ////            return;

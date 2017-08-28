@@ -8,7 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static classroom.zonlinks.com.classroom.C.IMGSAVEPATH;
+import static com.zonlinks.giantbing.guangzhouboard.C.IMGSAVEPATH;
+
 
 /**
  * Created by P on 2017/7/8.

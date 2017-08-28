@@ -13,10 +13,11 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.view.View;
 
+import com.zonlinks.giantbing.guangzhouboard.C;
+
 import java.io.File;
 import java.io.IOException;
 
-import classroom.zonlinks.com.classroom.C;
 
 /**
  * Created by P on 2017/7/10.
@@ -108,7 +109,7 @@ public class DeviceUtil  {
         Uri imageUri = Uri.fromFile(outputImage);
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE"); //照相
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri); //指定图片输出地址
-        context.startActivityForResult(intent,C.TAKE_PHOTO); //启动照相
+        context.startActivityForResult(intent, C.TAKE_PHOTO); //启动照相
         //拍完照startActivityForResult() 结果返回onActivityResult()函数
         return outputImage.getPath();
     }
