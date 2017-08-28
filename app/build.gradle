@@ -67,7 +67,7 @@ dependencies {
     //gifview
     compile 'com.github.Cutta:GifView:1.1'
     // ikjplayer
-    compile 'com.shuyu:gsyVideoPlayer-java:2.0.4'
-
-    compile 'com.shuyu:gsyVideoPlayer-ex_so:2.0.4'
+//    compile 'com.shuyu:gsyVideoPlayer-java:2.0.4'
+//
+//    compile 'com.shuyu:gsyVideoPlayer-ex_so:2.0.4'
 }
