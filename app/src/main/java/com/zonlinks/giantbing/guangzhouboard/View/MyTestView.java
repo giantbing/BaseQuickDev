@@ -1,4 +1,4 @@
-package com.zonlinks.giantbing.guangzhouboard;
+package com.zonlinks.giantbing.guangzhouboard.View;
 
 
 import android.content.Context;
@@ -8,10 +8,10 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import static android.R.attr.path;
+import com.zonlinks.giantbing.guangzhouboard.Util.AnimotionHelper;
+import com.zonlinks.giantbing.guangzhouboard.Util.StartActivityHelper;
 
 /**
  * Created by P on 2017/8/28.
@@ -19,16 +19,19 @@ import static android.R.attr.path;
 
 public class MyTestView extends CustomBaseView {
     private Paint stokePaint ;
+    private clickLisner lisner;
     public MyTestView(Context context) {
         super(context);
     }
-
+    public void setLisner(clickLisner lisner){
+        this.lisner = lisner;
+    }
     public MyTestView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         stokePaint = new Paint();
         mDefaultTextPaint.setColor(0xff01F022);
         stokePaint.setColor(0xff000000);
-        stokePaint.setStrokeWidth(4);
+        stokePaint.setStrokeWidth(3);
         stokePaint.setStyle(Paint.Style.STROKE);
         stokePaint.setAntiAlias(true);
     }
@@ -41,6 +44,14 @@ public class MyTestView extends CustomBaseView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()){
+
+            case MotionEvent.ACTION_DOWN:
+                lisner.onClick();
+                break;
+
+        }
         return super.onTouchEvent(event);
     }
 
@@ -52,12 +63,15 @@ public class MyTestView extends CustomBaseView {
         Path rect_p = new Path();
         canvas.translate(mWidth / 2, mHeight / 2);
         RectF oval = new RectF(-150,-150,150,150);
-        RectF bottom = new RectF(-170,20,170,0);
+        RectF bottom = new RectF(-170,0,170,20);
         arc_p.addArc(oval,0,-180);
         rect_p.addRect(bottom,Path.Direction.CW);
         canvas.drawPath(arc_p,mDefaultTextPaint);
         canvas.drawPath(rect_p,mDefaultTextPaint);
         canvas.drawArc(oval,0,-180,true,stokePaint);
         canvas.drawRect(bottom,stokePaint);
+    }
+    public interface clickLisner{
+        void onClick();
     }
 }

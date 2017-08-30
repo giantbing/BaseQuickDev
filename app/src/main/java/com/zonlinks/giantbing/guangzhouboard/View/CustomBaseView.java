@@ -1,4 +1,4 @@
-package com.zonlinks.giantbing.guangzhouboard;
+package com.zonlinks.giantbing.guangzhouboard.View;
 
 import android.content.Context;
 import android.graphics.Canvas;

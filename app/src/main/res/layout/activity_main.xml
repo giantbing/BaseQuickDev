@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.zonlinks.giantbing.guangzhouboard.Activity.MainActivity">
 
-    <com.zonlinks.giantbing.guangzhouboard.MyTestView
+    <com.zonlinks.giantbing.guangzhouboard.View.MyTestView
+        android:id="@+id/myView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

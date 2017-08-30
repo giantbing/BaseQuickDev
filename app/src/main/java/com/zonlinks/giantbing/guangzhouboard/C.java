@@ -48,5 +48,5 @@ public class C {
     }
 
     public static String WECHATURL = "https://api.weixin.qq.com/";
-
+    public static String TESTPICURL = "http://wx1.sinaimg.cn/";
 }
