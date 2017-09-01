@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.zonlinks.giantbing.guangzhouboard.HttpClient.HttpCilent;
 import com.zonlinks.giantbing.guangzhouboard.R;
+import com.zonlinks.giantbing.guangzhouboard.Util.Image.ImageUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,8 +29,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.R.attr.data;
 
 public class TwoActivity extends AppCompatActivity {
     @BindView(R.id.two_btn)
@@ -58,7 +57,7 @@ public class TwoActivity extends AppCompatActivity {
             lp.width = pagerWidth;
         }
         viewPager.setLayoutParams(lp);
-        viewPager.setPageMargin(-300);
+        viewPager.setPageMargin(-50);
         two_layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -91,7 +90,7 @@ public class TwoActivity extends AppCompatActivity {
                 try {
                     byte data[] = response.body().bytes();
                     final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    first.setImageBitmap(bitmap);
+                    first.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -160,14 +159,6 @@ public class TwoActivity extends AppCompatActivity {
 
 
 
-
-
-
-        third.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.image3, TwoActivity.this));
-
-
-
-        fourth.setImageBitmap(ImageUtil.getReverseBitmapById(R.mipmap.image4, TwoActivity.this));
 
 //        imageViews.add(a);
         imageViews.add(first);

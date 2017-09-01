@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.zonlinks.giantbing.guangzhouboard.Util.Decode;
 
+import org.json.JSONArray;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -111,6 +113,18 @@ public class HttpUtil {
             default:
                 return "发生错误，错误码为"+code;
         }
+
+    }
+
+    public static String pragmaFix(String[] string){
+        JSONArray finalarry = new JSONArray();
+        for (String i : string){
+
+            finalarry.put(i);
+
+        }
+
+        return finalarry.toString();
 
     }
 }

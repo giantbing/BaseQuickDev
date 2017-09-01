@@ -10,6 +10,7 @@ import com.zonlinks.giantbing.guangzhouboard.Util.MacUtil;
  */
 
 public class C {
+
     //自定义变量
     public static final int TAKE_PHOTO = 1;
     public static final int CROP_PHOTO = 2;
@@ -27,7 +28,9 @@ public class C {
     public static String IMGSAVEPATH =Environment.getExternalStorageDirectory().toString() + "/zonglinks/img/";
     public static String CacheSAVEPATH =Environment.getExternalStorageDirectory().toString() + "/zonglinks/img/cache/";
     public static String ASKCacheSAVEPATH =Environment.getExternalStorageDirectory().toString() + "/zonglinks/img/cache/ask";
-    //public static String BASEURL="http://114.55.173.248:1233/";
+
+    public static String BASEURL="http://114.55.173.248:2556/";
+
     public static final String Brodcasturl = "rtsp://%s:8554/classlive_%s.sdp";
 
     public static String NANPINGBASEURL="http://www.xszhxy.com/com/bennet/webapp/api/";
@@ -35,7 +38,7 @@ public class C {
     public static String APPSECRET="74de35ab402940b199b44b043291f4ad";
     //数据15秒刷新一次
     public static int STATEFREASHITME=15000;
-
+    public static int REGFREASHITME=5000;
     public static String MAC ;
 
     public static String getMAC() {

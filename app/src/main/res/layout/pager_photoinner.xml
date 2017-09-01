@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/mainlayout">
-
-    <!--<com.zonlinks.giantbing.guangzhouboard.View.MyTestView-->
-        <!--android:id="@+id/myView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
+    android:layout_height="match_parent">
     <android.support.v4.view.ViewPager
-        android:id="@+id/MainPager"
+        android:id="@+id/photoinnerpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:clipChildren="false" />
-
 </RelativeLayout>
