@@ -34,6 +34,7 @@ public class MainPagerAdapter extends PagerAdapter {
     }
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+        if (position<viewlist.size())
         container.removeView(viewlist.get(position));
     }
     public void setViewlist(List<View> viewlist) {

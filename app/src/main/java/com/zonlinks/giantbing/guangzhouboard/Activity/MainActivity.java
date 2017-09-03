@@ -13,6 +13,7 @@ import com.zonlinks.giantbing.guangzhouboard.Adapter.MainPagerAdapter;
 import com.zonlinks.giantbing.guangzhouboard.C;
 import com.zonlinks.giantbing.guangzhouboard.Entity.AllData;
 import com.zonlinks.giantbing.guangzhouboard.Entity.CheackUpdate;
+import com.zonlinks.giantbing.guangzhouboard.Excute.MainPagerExcute;
 import com.zonlinks.giantbing.guangzhouboard.HttpClient.HttpCilent;
 import com.zonlinks.giantbing.guangzhouboard.R;
 import com.zonlinks.giantbing.guangzhouboard.Util.ToastHelper;
@@ -34,12 +35,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
-
+    private Runnable cycleRunnable;
+    private boolean cycleable = true;
     private MainPagerAdapter mainPagerAdapter;
     private List<View> viewList;
     private PhotoInnerLayout photoInnerLayout ;
     private PhotoVideoInnerLayout photoVideoInnerLayout ;
     private PhotoTextInnerLayout photoTextInnerLayout ;
+    private List<String> pageNumber ;
     @BindView(R.id.mainlayout)
     RelativeLayout mainlayout;
     @BindView(R.id.MainPager)
@@ -62,14 +65,44 @@ public class MainActivity extends BaseActivity {
     }
     public void initData(){
         viewList = new ArrayList<>();
-        photoInnerLayout = new PhotoInnerLayout(MainActivity.this,MainPager);
-        photoVideoInnerLayout = new PhotoVideoInnerLayout(MainActivity.this,MainPager);
-        photoTextInnerLayout = new PhotoTextInnerLayout(MainActivity.this,MainPager);
-        viewList.add(photoInnerLayout);
-        viewList.add(photoTextInnerLayout);
-        viewList.add(photoVideoInnerLayout);
+        pageNumber = new ArrayList<>();
+        photoInnerLayout = new PhotoInnerLayout(MainActivity.this, MainPager, mHandler, new MainPagerExcute() {
+            @Override
+            public void toNextPage(int page) {
+                toNextpage(page);
+            }
+        });
+        photoVideoInnerLayout = new PhotoVideoInnerLayout(MainActivity.this,MainPager, mHandler, new MainPagerExcute() {
+            @Override
+            public void toNextPage(int page) {
+                toNextpage(page);
+            }
+        });
+        photoTextInnerLayout = new PhotoTextInnerLayout(MainActivity.this,MainPager, mHandler, new MainPagerExcute() {
+            @Override
+            public void toNextPage(int page) {
+                toNextpage(page);
+            }
+        });
         mainPagerAdapter = new MainPagerAdapter(viewList);
         MainPager.setOffscreenPageLimit(3);
+        MainPager.setAdapter(mainPagerAdapter);
+        MainPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         //pagerWidth = (int) (getResources().getDisplayMetrics().widthPixels * 3.0f / 5.0f);
 //        ViewGroup.LayoutParams lp = MainPager.getLayoutParams();
 //        if (lp == null) {
@@ -102,7 +135,7 @@ public class MainActivity extends BaseActivity {
             public void onFailure(Call<CheackUpdate> call, Throwable t) {
 
             }
-        });
+        },MainActivity.this);
     }
     private void getAlldata(){
         HttpCilent.getAlldata(new Callback<AllData>() {
@@ -125,7 +158,7 @@ public class MainActivity extends BaseActivity {
             public void onFailure(Call<AllData> call, Throwable t) {
                 ToastHelper.info(MainActivity.this,"该文化墙未设置，请移步后台设置！");
             }
-        });
+        },MainActivity.this);
     }
     private void freashupdate(){
         statnable = new Runnable() {
@@ -147,45 +180,119 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         mHandler.removeCallbacks(statnable);
         statnable=null;
+        photoInnerLayout.stopCycle();
+        photoTextInnerLayout.stopCycle();
+        photoVideoInnerLayout.stopCycle();
     }
     private void loadData(AllData alldata){
+        freshInitPage();
         viewList.clear();
-
+        pageNumber.clear();
         switch ( alldata.getDevice().getCultureWall().getPage1()){
             case "Image":
                 viewList.add(photoInnerLayout);
+                pageNumber.add("Image");
                 break;
             case "Image_Text":
                 viewList.add(photoTextInnerLayout);
+                pageNumber.add("Image_Text");
                 break;
             case "Image_Video":
                 viewList.add(photoVideoInnerLayout);
+                pageNumber.add("Image_Video");
                 break;
         }
         switch ( alldata.getDevice().getCultureWall().getPage2()){
             case "Image":
                 viewList.add(photoInnerLayout);
+                pageNumber.add("Image");
                 break;
             case "Image_Text":
                 viewList.add(photoTextInnerLayout);
+                pageNumber.add("Image_Text");
                 break;
             case "Image_Video":
                 viewList.add(photoVideoInnerLayout);
+                pageNumber.add("Image_Video");
                 break;
         }
         switch ( alldata.getDevice().getCultureWall().getPage3()){
             case "Image":
                 viewList.add(photoInnerLayout);
+                pageNumber.add("Image");
                 break;
             case "Image_Text":
                 viewList.add(photoTextInnerLayout);
+                pageNumber.add("Image_Text");
                 break;
             case "Image_Video":
                 viewList.add(photoVideoInnerLayout);
+                pageNumber.add("Image_Video");
                 break;
         }
+
         mainPagerAdapter.setViewlist(viewList);
         mainPagerAdapter.notifyDataSetChanged();
-        MainPager.setAdapter(mainPagerAdapter);
+        initPage(alldata,pageNumber);
+
+    }
+    public void toNextpage(int page){
+
+        if (page>=viewList.size()){
+            MainPager.setCurrentItem(0);
+            setPageCycle(0);
+        }else {
+            MainPager.setCurrentItem(page);
+            setPageCycle(page);
+        }
+
+    }
+    public void initRunable(){
+        cycleRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                mHandler.postDelayed(this,3000);
+            }
+        };
+    }
+    private void setPageCycle(int page){
+        if (pageNumber.get(page).equals("Image")){
+            photoInnerLayout.startCycle();
+            photoTextInnerLayout.stopCycle();
+            photoVideoInnerLayout.stopCycle();
+        }else if (pageNumber.get(page).equals("Image_Text")){
+            photoTextInnerLayout.startCycle();
+            photoInnerLayout.stopCycle();
+            photoVideoInnerLayout.stopCycle();
+        }else if (pageNumber.get(page).equals("Image_Video")){
+            photoVideoInnerLayout.startCycle();
+            photoInnerLayout.stopCycle();
+            photoTextInnerLayout.stopCycle();
+
+        }
+    }
+    public void initPage(AllData alldata,List<String> list){
+        for (int position = 0;position<list.size();position++){
+            String s = list.get(position);
+            if (s.equals("Image")){
+                photoInnerLayout.loadData(alldata.getSchoolCultureWallList(),position);
+            }else if (s.equals("Image_Text")){
+                photoTextInnerLayout.loadData(alldata.getSchoolCultureWallList(),alldata.getSchoolCultureWallTextList(),position);
+            }else if (s.equals("Image_Video")){
+                photoVideoInnerLayout.loadData(alldata.getSchoolCultureWallList(),alldata.getSchoolVideoCultureWallList(),position);
+            }
+
+
+
+        }
+    }
+    public void freshInitPage(){
+        photoInnerLayout.stopCycle();
+        photoTextInnerLayout.stopCycle();
+        photoVideoInnerLayout.stopCycle();
+        photoInnerLayout.freshView();
+        photoTextInnerLayout.freshView();
+        photoVideoInnerLayout.freshView();
     }
 }

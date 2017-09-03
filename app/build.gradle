@@ -61,9 +61,8 @@ dependencies {
     //加载狂
     //gifview
     // ikjplayer
-//    compile 'com.shuyu:gsyVideoPlayer-java:2.0.4'
-//
-//    compile 'com.shuyu:gsyVideoPlayer-ex_so:2.0.4'
+    compile 'com.shuyu:gsyVideoPlayer-java:2.0.4'
+    compile 'com.shuyu:gsyVideoPlayer-ex_so:2.0.4'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.baoyz.pullrefreshlayout:library:1.2.0'
     compile 'com.kevin:jsontool:1.0.0'

@@ -46,9 +46,9 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<RegEntity> call, Throwable t) {
-
+                Log.d("2333", "onFailure: "+t.toString());
             }
-        });
+        },SplashActivity.this);
     }
     private void delayToMain(){
 

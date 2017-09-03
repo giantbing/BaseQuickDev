@@ -84,74 +84,74 @@ public class TwoActivity extends AppCompatActivity {
         final ImageView third = new ImageView(TwoActivity.this);
         final ImageView fourth = new ImageView(TwoActivity.this);
 
-        HttpCilent.putimg(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    byte data[] = response.body().bytes();
-                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    first.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        },"large/69dba6f5ly1fhnfotqiawj20go0oodrf.jpg");
-        HttpCilent.putimg(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    byte data[] = response.body().bytes();
-                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    second.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        },"large/69dba6f5jw1f37rmp97t9j20go0op478.jpg");
-        HttpCilent.putimg(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    byte data[] = response.body().bytes();
-                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    third.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        },"large/69dba6f5jw1er2p8hwn8wj20rs155q7q.jpg");
-        HttpCilent.putimg(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    byte data[] = response.body().bytes();
-                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    fourth.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        },"large/69dba6f5jw1ef72e97pdrj20go0oon2a.jpg");
+//        HttpCilent.putimg(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                try {
+//                    byte data[] = response.body().bytes();
+//                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                    first.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        },"large/69dba6f5ly1fhnfotqiawj20go0oodrf.jpg");
+//        HttpCilent.putimg(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                try {
+//                    byte data[] = response.body().bytes();
+//                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                    second.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        },"large/69dba6f5jw1f37rmp97t9j20go0op478.jpg");
+//        HttpCilent.putimg(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                try {
+//                    byte data[] = response.body().bytes();
+//                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                    third.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        },"large/69dba6f5jw1er2p8hwn8wj20rs155q7q.jpg");
+//        HttpCilent.putimg(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                try {
+//                    byte data[] = response.body().bytes();
+//                    final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//                    fourth.setImageBitmap(ImageUtil.getReverseBitmapById(bitmap, TwoActivity.this));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        },"large/69dba6f5jw1ef72e97pdrj20go0oon2a.jpg");
 
 
 //        ImageView a = new ImageView(TwoActivity.this);
