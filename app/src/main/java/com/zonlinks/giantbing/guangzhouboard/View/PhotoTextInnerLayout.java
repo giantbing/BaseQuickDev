@@ -83,6 +83,7 @@ public class PhotoTextInnerLayout extends RelativeLayout {
 
     public void stopCycle() {
         handler.removeCallbacks(cycleRunnable);
+        textPagerContent.setText("");
     }
 
     public void freshView() {
@@ -159,6 +160,7 @@ public class PhotoTextInnerLayout extends RelativeLayout {
         });
     }
     public void initText(List<AllData.SchoolCultureWallTextListBean> cultureWallTextListBeen){
+
         if (cultureWallTextListBeen!=null){
             if (cultureWallTextListBeen.size()>0){
                 textPagerTitle.setText(cultureWallTextListBeen.get(0).getTitle());

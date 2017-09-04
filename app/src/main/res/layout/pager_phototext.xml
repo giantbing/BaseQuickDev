@@ -41,13 +41,15 @@
             android:maxLines="20"
             android:scrollbars="vertical" />
         <TextView
-            android:layout_below="@id/text_pager_content"
+            android:layout_alignParentBottom="true"
             android:id="@+id/text_pager_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:text="@string/defaulttext"
+            android:text="233333333"
+            android:gravity="right"
+            android:layout_marginRight="40dp"
             android:textColor="@color/black"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:layout_marginBottom="40dp"/>
     </RelativeLayout>
 </RelativeLayout>
