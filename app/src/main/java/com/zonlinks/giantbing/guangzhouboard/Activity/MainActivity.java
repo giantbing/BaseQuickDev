@@ -1,13 +1,12 @@
 package com.zonlinks.giantbing.guangzhouboard.Activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.zonlinks.giantbing.guangzhouboard.Adapter.MainPagerAdapter;
 import com.zonlinks.giantbing.guangzhouboard.C;
@@ -17,38 +16,49 @@ import com.zonlinks.giantbing.guangzhouboard.Excute.MainPagerExcute;
 import com.zonlinks.giantbing.guangzhouboard.HttpClient.HttpCilent;
 import com.zonlinks.giantbing.guangzhouboard.R;
 import com.zonlinks.giantbing.guangzhouboard.Util.ToastHelper;
-import com.zonlinks.giantbing.guangzhouboard.View.Pager.GallyPageTransformer;
-import com.zonlinks.giantbing.guangzhouboard.View.Pager.MyViewPager;
+import com.zonlinks.giantbing.guangzhouboard.View.MarqueeScrollTextView;
 import com.zonlinks.giantbing.guangzhouboard.View.PhotoInnerLayout;
 import com.zonlinks.giantbing.guangzhouboard.View.PhotoTextInnerLayout;
 import com.zonlinks.giantbing.guangzhouboard.View.PhotoVideoInnerLayout;
 
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
-    private Runnable cycleRunnable;
-    private boolean cycleable = true;
-    private MainPagerAdapter mainPagerAdapter;
-    private List<View> viewList;
-    private PhotoInnerLayout photoInnerLayout ;
-    private PhotoVideoInnerLayout photoVideoInnerLayout ;
-    private PhotoTextInnerLayout photoTextInnerLayout ;
-    private List<String> pageNumber ;
+    @BindView(R.id.margueeTextview)
+    MarqueeScrollTextView margueeTextview;
     @BindView(R.id.mainlayout)
     RelativeLayout mainlayout;
     @BindView(R.id.MainPager)
     ViewPager MainPager;
-
-
+    @BindView(R.id.schoole_name)
+    TextView schooleName;
+    @BindView(R.id.top_time)
+    TextView topTime;
+    @BindView(R.id.top_date)
+    TextView topDate;
+    @BindView(R.id.top_tempcture)
+    TextView topTempcture;
+    @BindView(R.id.top_air)
+    TextView topAir;
+    @BindView(R.id.top_changeskin)
+    ImageView topChangeskin;
+    private Runnable dateRunnable;
+    private boolean cycleable = true;
+    private MainPagerAdapter mainPagerAdapter;
+    private List<View> viewList;
+    private PhotoInnerLayout photoInnerLayout;
+    private PhotoVideoInnerLayout photoVideoInnerLayout;
+    private PhotoTextInnerLayout photoTextInnerLayout;
+    private List<String> pageNumber;
 
 
 //    @BindView(R.id.myView)
@@ -62,8 +72,11 @@ public class MainActivity extends BaseActivity {
         freashupdate();
         getAlldata();
         initData();
+        initView();
+        initDateTime();
     }
-    public void initData(){
+
+    public void initData() {
         viewList = new ArrayList<>();
         pageNumber = new ArrayList<>();
         photoInnerLayout = new PhotoInnerLayout(MainActivity.this, MainPager, mHandler, new MainPagerExcute() {
@@ -72,13 +85,13 @@ public class MainActivity extends BaseActivity {
                 toNextpage(page);
             }
         });
-        photoVideoInnerLayout = new PhotoVideoInnerLayout(MainActivity.this,MainPager, mHandler, new MainPagerExcute() {
+        photoVideoInnerLayout = new PhotoVideoInnerLayout(MainActivity.this, MainPager, mHandler, new MainPagerExcute() {
             @Override
             public void toNextPage(int page) {
                 toNextpage(page);
             }
         });
-        photoTextInnerLayout = new PhotoTextInnerLayout(MainActivity.this,MainPager, mHandler, new MainPagerExcute() {
+        photoTextInnerLayout = new PhotoTextInnerLayout(MainActivity.this, MainPager, mHandler, new MainPagerExcute() {
             @Override
             public void toNextPage(int page) {
                 toNextpage(page);
@@ -117,14 +130,14 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void checkUpdate(){
+    private void checkUpdate() {
 
         HttpCilent.checkUpdate(new Callback<CheackUpdate>() {
             @Override
             public void onResponse(Call<CheackUpdate> call, Response<CheackUpdate> response) {
                 CheackUpdate updateentity = response.body();
-                Log.d("2333", "onResponse: "+updateentity.getUpdate());
-                if (updateentity.getUpdate()==1){
+                Log.d("2333", "onResponse: " + updateentity.getUpdate());
+                if (updateentity.getUpdate() == 1) {
 
                     getAlldata();
                 }
@@ -135,32 +148,35 @@ public class MainActivity extends BaseActivity {
             public void onFailure(Call<CheackUpdate> call, Throwable t) {
 
             }
-        },MainActivity.this);
+        }, MainActivity.this);
     }
-    private void getAlldata(){
+
+    private void getAlldata() {
         HttpCilent.getAlldata(new Callback<AllData>() {
             @Override
             public void onResponse(Call<AllData> call, Response<AllData> response) {
-                AllData allData =response.body();
-                if (allData!=null){
-                    if (allData.getMessage().equals("该设备为新设备")){
-                        ToastHelper.info(MainActivity.this,"该设备为新设备，请移步后台设置！");
-                    }else {
+                AllData allData = response.body();
+                if (allData != null) {
+                    if (allData.getMessage().equals("该设备为新设备")) {
+                        ToastHelper.info(MainActivity.this, "该设备为新设备，请移步后台设置！");
+                    } else {
                         loadData(allData);
+                        loadViewData(allData);
                     }
-                }else {
-                    ToastHelper.info(MainActivity.this,"该文化墙未设置，请移步后台设置！");
+                } else {
+                    ToastHelper.info(MainActivity.this, "该文化墙未设置，请移步后台设置！");
                 }
 
             }
 
             @Override
             public void onFailure(Call<AllData> call, Throwable t) {
-                ToastHelper.info(MainActivity.this,"该文化墙未设置，请移步后台设置！");
+                ToastHelper.info(MainActivity.this, "该文化墙未设置，请移步后台设置！");
             }
-        },MainActivity.this);
+        }, MainActivity.this);
     }
-    private void freashupdate(){
+
+    private void freashupdate() {
         statnable = new Runnable() {
             @Override
             public void run() {
@@ -179,16 +195,18 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(statnable);
-        statnable=null;
+        statnable = null;
         photoInnerLayout.stopCycle();
         photoTextInnerLayout.stopCycle();
         photoVideoInnerLayout.stopCycle();
+        mHandler.removeCallbacks(dateRunnable);
     }
-    private void loadData(AllData alldata){
+
+    private void loadData(AllData alldata) {
         freshInitPage();
         viewList.clear();
         pageNumber.clear();
-        switch ( alldata.getDevice().getCultureWall().getPage1()){
+        switch (alldata.getDevice().getCultureWall().getPage1()) {
             case "Image":
                 viewList.add(photoInnerLayout);
                 pageNumber.add("Image");
@@ -202,7 +220,7 @@ public class MainActivity extends BaseActivity {
                 pageNumber.add("Image_Video");
                 break;
         }
-        switch ( alldata.getDevice().getCultureWall().getPage2()){
+        switch (alldata.getDevice().getCultureWall().getPage2()) {
             case "Image":
                 viewList.add(photoInnerLayout);
                 pageNumber.add("Image");
@@ -216,7 +234,7 @@ public class MainActivity extends BaseActivity {
                 pageNumber.add("Image_Video");
                 break;
         }
-        switch ( alldata.getDevice().getCultureWall().getPage3()){
+        switch (alldata.getDevice().getCultureWall().getPage3()) {
             case "Image":
                 viewList.add(photoInnerLayout);
                 pageNumber.add("Image");
@@ -233,66 +251,91 @@ public class MainActivity extends BaseActivity {
 
         mainPagerAdapter.setViewlist(viewList);
         mainPagerAdapter.notifyDataSetChanged();
-        initPage(alldata,pageNumber);
+        initPage(alldata, pageNumber);
 
     }
-    public void toNextpage(int page){
 
-        if (page>=viewList.size()){
+    public void toNextpage(int page) {
+
+        if (page >= viewList.size()) {
             MainPager.setCurrentItem(0);
             setPageCycle(0);
-        }else {
+        } else {
             MainPager.setCurrentItem(page);
             setPageCycle(page);
         }
 
     }
-    public void initRunable(){
-        cycleRunnable = new Runnable() {
-            @Override
-            public void run() {
 
-                mHandler.postDelayed(this,3000);
-            }
-        };
-    }
-    private void setPageCycle(int page){
-        if (pageNumber.get(page).equals("Image")){
+
+    private void setPageCycle(int page) {
+        if (pageNumber.get(page).equals("Image")) {
             photoInnerLayout.startCycle();
             photoTextInnerLayout.stopCycle();
             photoVideoInnerLayout.stopCycle();
-        }else if (pageNumber.get(page).equals("Image_Text")){
+        } else if (pageNumber.get(page).equals("Image_Text")) {
             photoTextInnerLayout.startCycle();
             photoInnerLayout.stopCycle();
             photoVideoInnerLayout.stopCycle();
-        }else if (pageNumber.get(page).equals("Image_Video")){
+        } else if (pageNumber.get(page).equals("Image_Video")) {
             photoVideoInnerLayout.startCycle();
             photoInnerLayout.stopCycle();
             photoTextInnerLayout.stopCycle();
 
         }
     }
-    public void initPage(AllData alldata,List<String> list){
-        for (int position = 0;position<list.size();position++){
-            String s = list.get(position);
-            if (s.equals("Image")){
-                photoInnerLayout.loadData(alldata.getSchoolCultureWallList(),position);
-            }else if (s.equals("Image_Text")){
-                photoTextInnerLayout.loadData(alldata.getSchoolCultureWallList(),alldata.getSchoolCultureWallTextList(),position);
-            }else if (s.equals("Image_Video")){
-                photoVideoInnerLayout.loadData(alldata.getSchoolCultureWallList(),alldata.getSchoolVideoCultureWallList(),position);
-            }
 
+    public void initPage(AllData alldata, List<String> list) {
+        for (int position = 0; position < list.size(); position++) {
+            String s = list.get(position);
+            if (s.equals("Image")) {
+                photoInnerLayout.loadData(alldata.getSchoolCultureWallList(), position);
+            } else if (s.equals("Image_Text")) {
+                photoTextInnerLayout.loadData(alldata.getSchoolCultureWallList(), alldata.getSchoolCultureWallTextList(), position);
+            } else if (s.equals("Image_Video")) {
+                photoVideoInnerLayout.loadData(alldata.getSchoolCultureWallList(), alldata.getSchoolVideoCultureWallList(), position);
+            }
 
 
         }
     }
-    public void freshInitPage(){
+
+    public void freshInitPage() {
         photoInnerLayout.stopCycle();
         photoTextInnerLayout.stopCycle();
         photoVideoInnerLayout.stopCycle();
         photoInnerLayout.freshView();
         photoTextInnerLayout.freshView();
         photoVideoInnerLayout.freshView();
+    }
+
+    public void initView() {
+        margueeTextview.setSpeed(2);
+        margueeTextview.setCurrentPosition(1920);
+
+    }
+    public void loadViewData(AllData allData){
+        schooleName.setText(allData.getDevice().getSchool().getName());
+        topTempcture.setText(allData.getWeather().getResult().getData().getRealtime().getWeather().getTemperature()+"°C\t"
+                +allData.getWeather().getResult().getData().getRealtime().getWeather().getInfo());
+        topAir.setText("空气："+allData.getWeather().getResult().getData().getPm25().getPm25().getQuality());
+        margueeTextview.setText(allData.getSchoolButtomNotifyList().get(0).getContent());
+    }
+    public void initDateTime(){
+
+        dateRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Date date = new Date();
+                SimpleDateFormat timeformat=new SimpleDateFormat("HH:mm");
+                SimpleDateFormat dateformat=new SimpleDateFormat("yyyy-MM-dd");
+                String time=timeformat.format(date);
+                String datestring=dateformat.format(date);
+                topDate.setText(datestring);
+                topTime.setText(time);
+                mHandler.postDelayed(this,60000);
+            }
+        };
+        mHandler.post(dateRunnable);
     }
 }

@@ -2,18 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mainlayout">
+    android:id="@+id/mainlayout"
+    android:background="@mipmap/background_b">
+    <include layout="@layout/top_layout"
+        android:id="@+id/top_layout"/>
 
     <!--<com.zonlinks.giantbing.guangzhouboard.View.MyTestView-->
         <!--android:id="@+id/myView"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent" />-->
+    <include layout="@layout/bottom_layout"
+        android:id="@+id/bottom_layout"/>
+
     <android.support.v4.view.ViewPager
+        android:layout_above="@id/bottom_layout"
+        android:layout_below="@id/top_layout"
         android:id="@+id/MainPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:clipChildren="false" />
+
+
 
 </RelativeLayout>

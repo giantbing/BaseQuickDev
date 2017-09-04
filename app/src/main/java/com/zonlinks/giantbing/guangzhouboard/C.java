@@ -14,7 +14,7 @@ public class C {
     //自定义变量
     public static final int TAKE_PHOTO = 1;
     public static final int CROP_PHOTO = 2;
-
+    public static final String SCHOOLNAME = "广州市珠海区滨江东路小学";
     public static final String GRADE = "grade";
 
     public static final String BaseURLKEY = "BASEURL";
