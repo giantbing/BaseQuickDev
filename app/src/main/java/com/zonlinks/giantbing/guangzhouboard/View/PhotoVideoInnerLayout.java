@@ -21,11 +21,14 @@ import com.zonlinks.giantbing.guangzhouboard.Excute.MainPagerExcute;
 import com.zonlinks.giantbing.guangzhouboard.R;
 import com.zonlinks.giantbing.guangzhouboard.Util.ToastHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.zonlinks.giantbing.guangzhouboard.C.CacheSAVEPATH;
 
 /**
  * Created by P on 2017/8/30.
@@ -45,6 +48,8 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
     private Handler handler;
     private MainPagerExcute ExcutLisnner;
     private int mainPosition;
+    private List<AllData.SchoolVideoCultureWallListBean> videoCultureWallListBeen ;
+    private File cachefile;
     //    public PhotoInnerLayout(Context context, @Nullable AttributeSet attrs) {
 //        super(context, attrs);
 //        this.context = context;
@@ -76,6 +81,7 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
 
     public void startCycle() {
         handler.post(cycleRunnable);
+        startPlay();
     }
 
     public void stopCycle() {
@@ -93,11 +99,13 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
         this.viewGroup = viewGroup;
         this.handler = handler;
         this.ExcutLisnner = ExcutLisnner;
+        cachefile = new File(CacheSAVEPATH);
         mainPosition = 0;
         initview();
     }
 
     public void loadData(List<AllData.SchoolCultureWallListBean> SchoolCultureWallList, List<AllData.SchoolVideoCultureWallListBean> videoCultureWallListBeen, int position) {
+       this.videoCultureWallListBeen = videoCultureWallListBeen;
         if (position == 0)
             startCycle();
         else
@@ -112,7 +120,6 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
             viewList.add(imageView);
 
         }
-        startPlay(videoCultureWallListBeen);
         mainPagerAdapter = new MainPagerAdapter(viewList);
         videoinnerpager.setAdapter(mainPagerAdapter);
     }
@@ -148,134 +155,139 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
     /**
      * 此方法会在所有的控件都从xml文件中加载完成后调用
      */
-    public void startPlay(List<AllData.SchoolVideoCultureWallListBean> videoCultureWallListBeen){
-        List<GSYVideoModel> videolist = new ArrayList<>();
-        for(AllData.SchoolVideoCultureWallListBean bean:videoCultureWallListBeen){
-            GSYVideoModel gsyVideoModel = new GSYVideoModel(bean.getImagePath(),bean.getTitle());
-            videolist.add(gsyVideoModel);
-            Log.d("2333", "startPlay: "+bean.getImagePath());
+    public void startPlay(){
+
+        if (videoCultureWallListBeen!=null){
+            List<GSYVideoModel> videolist = new ArrayList<>();
+            for(AllData.SchoolVideoCultureWallListBean bean:videoCultureWallListBeen){
+                GSYVideoModel gsyVideoModel = new GSYVideoModel(bean.getImagePath(),bean.getTitle());
+                videolist.add(gsyVideoModel);
+                Log.d("2333", "startPlay: "+bean.getImagePath());
+            }
+            if (videolist.size()>0){
+
+                videoplayer.setUp(videolist,false,0,cachefile);
+                videoplayer.getBackButton().setVisibility(View.GONE);
+                videoplayer.setIsTouchWiget(true);
+                videoplayer.startPlayLogic();
+                videoplayer.setStandardVideoAllCallBack(new StandardVideoAllCallBack() {
+                    @Override
+                    public void onPrepared(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickStartIcon(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickStartError(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickStop(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickStopFullscreen(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickResume(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickResumeFullscreen(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickSeekbar(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickSeekbarFullscreen(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onAutoComplete(String url, Object... objects) {
+                        // TODO: 2017/9/4
+                        ToastHelper.success(context, "woyaoxiayiyela!");
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ExcutLisnner.toNextPage(mainPosition + 1);
+                                freshView();
+                                stopCycle();
+                            }
+                        }, 3000);
+                    }
+
+                    @Override
+                    public void onEnterFullscreen(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onQuitFullscreen(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onQuitSmallWidget(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onEnterSmallWidget(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onTouchScreenSeekVolume(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onTouchScreenSeekPosition(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onTouchScreenSeekLight(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onPlayError(String url, Object... objects) {
+                        // gsyVideoPlayer.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onClickStartThumb(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickBlank(String url, Object... objects) {
+
+                    }
+
+                    @Override
+                    public void onClickBlankFullscreen(String url, Object... objects) {
+
+                    }
+                });
+            }
         }
-        if (videolist.size()>0){
-            videoplayer.setUp(videolist,true,0);
-            videoplayer.getBackButton().setVisibility(View.GONE);
-            videoplayer.setIsTouchWiget(true);
-            videoplayer.startPlayLogic();
-            videoplayer.setStandardVideoAllCallBack(new StandardVideoAllCallBack() {
-                @Override
-                public void onPrepared(String url, Object... objects) {
 
-                }
-
-                @Override
-                public void onClickStartIcon(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickStartError(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickStop(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickStopFullscreen(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickResume(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickResumeFullscreen(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickSeekbar(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickSeekbarFullscreen(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onAutoComplete(String url, Object... objects) {
-                    // TODO: 2017/9/4
-                    ToastHelper.success(context, "woyaoxiayiyela!");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ExcutLisnner.toNextPage(mainPosition + 1);
-                            freshView();
-                            stopCycle();
-                        }
-                    }, 3000);
-                }
-
-                @Override
-                public void onEnterFullscreen(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onQuitFullscreen(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onQuitSmallWidget(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onEnterSmallWidget(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onTouchScreenSeekVolume(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onTouchScreenSeekPosition(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onTouchScreenSeekLight(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onPlayError(String url, Object... objects) {
-                   // gsyVideoPlayer.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onClickStartThumb(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickBlank(String url, Object... objects) {
-
-                }
-
-                @Override
-                public void onClickBlankFullscreen(String url, Object... objects) {
-
-                }
-            });
-        }
 
     }
 }

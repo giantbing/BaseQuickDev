@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zonlinks.giantbing.guangzhouboard.Adapter.MainPagerAdapter;
@@ -31,25 +32,32 @@ public class PhotoTextInnerLayout extends RelativeLayout {
 
     @BindView(R.id.textinnerPager)
     ViewPager textinnerPager;
+    @BindView(R.id.text_pager_title)
+    TextView textPagerTitle;
+    @BindView(R.id.text_pager_content)
+    VerticalScrollTextView textPagerContent;
+    @BindView(R.id.text_pager_time)
+    TextView textPagerTime;
     private MainPagerAdapter mainPagerAdapter;
     private List<View> viewList;
     private ViewGroup viewGroup;
     private Context context;
-    private int currentIndex =0;
+    private int currentIndex = 0;
     private Handler handler;
     private MainPagerExcute ExcutLisnner;
     private int mainPosition;
-//    public PhotoInnerLayout(Context context, @Nullable AttributeSet attrs) {
+    private List<AllData.SchoolCultureWallTextListBean> cultureWallTextListBeen;
+    //    public PhotoInnerLayout(Context context, @Nullable AttributeSet attrs) {
 //        super(context, attrs);
 //        this.context = context;
 //        initview();
 //       // splashContent.setText("2333333");
 //    }
-Runnable cycleRunnable = new Runnable() {
-    @Override
-    public void run() {
+    Runnable cycleRunnable = new Runnable() {
+        @Override
+        public void run() {
 
-            if (currentIndex>=viewList.size()){
+            if (currentIndex >= viewList.size()) {
                 currentIndex = 0;
             }
             textinnerPager.setCurrentItem(currentIndex);
@@ -57,8 +65,9 @@ Runnable cycleRunnable = new Runnable() {
             //递归循环，图片切换速度3秒一张
             handler.postDelayed(this, 3000);
 
-    }
-};
+        }
+    };
+
     public int getMainPosition() {
         return mainPosition;
     }
@@ -67,18 +76,21 @@ Runnable cycleRunnable = new Runnable() {
         this.mainPosition = mainPosition;
     }
 
-    public void startCycle(){
+    public void startCycle() {
         handler.post(cycleRunnable);
+        initText(cultureWallTextListBeen);
     }
-    public void stopCycle(){
+
+    public void stopCycle() {
         handler.removeCallbacks(cycleRunnable);
     }
 
-    public void freshView(){
+    public void freshView() {
         currentIndex = 0;
         textinnerPager.setCurrentItem(currentIndex);
     }
-    public PhotoTextInnerLayout(Context context, ViewGroup viewGroup, Handler handler,MainPagerExcute ExcutLisnner) {
+
+    public PhotoTextInnerLayout(Context context, ViewGroup viewGroup, Handler handler, MainPagerExcute ExcutLisnner) {
         super(context);
         this.context = context;
         this.viewGroup = viewGroup;
@@ -88,16 +100,17 @@ Runnable cycleRunnable = new Runnable() {
         initview();
     }
 
-    public void loadData(List<AllData.SchoolCultureWallListBean> SchoolCultureWallList,List<AllData.SchoolCultureWallTextListBean> cultureWallTextListBeen,int position){
-        if (position==0)
+    public void loadData(List<AllData.SchoolCultureWallListBean> SchoolCultureWallList, List<AllData.SchoolCultureWallTextListBean> cultureWallTextListBeen, int position) {
+       this.cultureWallTextListBeen = cultureWallTextListBeen;
+        if (position == 0)
             startCycle();
         else
             stopCycle();
         mainPosition = position;
         viewList.clear();
-        for (AllData.SchoolCultureWallListBean cultureWallListBean :SchoolCultureWallList){
+        for (AllData.SchoolCultureWallListBean cultureWallListBean : SchoolCultureWallList) {
             ImageView imageView = new ImageView(context);
-            Glide.with(context).load(C.BASEURL+cultureWallListBean.getImagePath())
+            Glide.with(context).load(C.BASEURL + cultureWallListBean.getImagePath())
                     .error(R.mipmap.image2)
                     .into(imageView);
             viewList.add(imageView);
@@ -105,6 +118,7 @@ Runnable cycleRunnable = new Runnable() {
         }
         mainPagerAdapter = new MainPagerAdapter(viewList);
         textinnerPager.setAdapter(mainPagerAdapter);
+
     }
 
     private void initview() {
@@ -124,16 +138,16 @@ Runnable cycleRunnable = new Runnable() {
 
             @Override
             public void onPageSelected(int position) {
-                if (position==viewList.size()-1){
-                    ToastHelper.success(context,"woyaoxiayiyela!");
+                if (position == viewList.size() - 1) {
+                    ToastHelper.success(context, "woyaoxiayiyela!");
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            ExcutLisnner.toNextPage(mainPosition+1);
+                            ExcutLisnner.toNextPage(mainPosition + 1);
                             freshView();
                             stopCycle();
                         }
-                    },3000);
+                    }, 3000);
 
                 }
             }
@@ -143,6 +157,17 @@ Runnable cycleRunnable = new Runnable() {
 
             }
         });
+    }
+    public void initText(List<AllData.SchoolCultureWallTextListBean> cultureWallTextListBeen){
+        if (cultureWallTextListBeen!=null){
+            if (cultureWallTextListBeen.size()>0){
+                textPagerTitle.setText(cultureWallTextListBeen.get(0).getTitle());
+                textPagerTime.setText(cultureWallTextListBeen.get(0).getCreateTime());
+                textPagerContent.setText(cultureWallTextListBeen.get(0).getContent());
+            }
+        }
+
+
     }
     /**
      * 此方法会在所有的控件都从xml文件中加载完成后调用
