@@ -88,7 +88,7 @@ public class NetWorkUtils {
             return -1;
         }
         /**
-         * 获取当前的网络状态 ：没有网络-0：WIFI网络1：4G网络-4：3G网络-3：2G网络-2
+         * 获取当前的网络状态 ：没有网络-0：WIFI网络1：4G网络-4：3G网络-3：2G网络-2 以太网络
          * 自定义
          *
          * @param context
@@ -131,6 +131,8 @@ public class NetWorkUtils {
                 } else {
                     netType = 2;
                 }
+            }else if (nType ==ConnectivityManager.TYPE_ETHERNET){
+                netType = 5;
             }
             return netType;
         }

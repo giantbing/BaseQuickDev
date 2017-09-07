@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,11 +14,15 @@ import com.zonlinks.giantbing.guangzhouboard.Adapter.MainPagerAdapter;
 import com.zonlinks.giantbing.guangzhouboard.C;
 import com.zonlinks.giantbing.guangzhouboard.Entity.AllData;
 import com.zonlinks.giantbing.guangzhouboard.Entity.CheackUpdate;
+import com.zonlinks.giantbing.guangzhouboard.Entity.RegEntity;
+import com.zonlinks.giantbing.guangzhouboard.Excute.MainChangeSkinExcute;
 import com.zonlinks.giantbing.guangzhouboard.Excute.MainPagerExcute;
 import com.zonlinks.giantbing.guangzhouboard.HttpClient.HttpCilent;
 import com.zonlinks.giantbing.guangzhouboard.R;
 import com.zonlinks.giantbing.guangzhouboard.Util.ToastHelper;
+import com.zonlinks.giantbing.guangzhouboard.View.AddPopWindow;
 import com.zonlinks.giantbing.guangzhouboard.View.MarqueeScrollTextView;
+import com.zonlinks.giantbing.guangzhouboard.View.NotToouchPager;
 import com.zonlinks.giantbing.guangzhouboard.View.PhotoInnerLayout;
 import com.zonlinks.giantbing.guangzhouboard.View.PhotoTextInnerLayout;
 import com.zonlinks.giantbing.guangzhouboard.View.PhotoVideoInnerLayout;
@@ -39,7 +44,7 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.mainlayout)
     RelativeLayout mainlayout;
     @BindView(R.id.MainPager)
-    ViewPager MainPager;
+    NotToouchPager MainPager;
     @BindView(R.id.schoole_name)
     TextView schooleName;
     @BindView(R.id.top_time)
@@ -76,6 +81,7 @@ public class MainActivity extends BaseActivity {
         initView();
         initDateTime();
         hideSystemNavigationBar();
+        initclick();
     }
 
     public void initData() {
@@ -99,9 +105,9 @@ public class MainActivity extends BaseActivity {
                 toNextpage(page);
             }
         });
-        mainPagerAdapter = new MainPagerAdapter(viewList);
+
         MainPager.setOffscreenPageLimit(3);
-        MainPager.setAdapter(mainPagerAdapter);
+
         MainPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -130,6 +136,7 @@ public class MainActivity extends BaseActivity {
 
         // MainPager.setPageTransformer(true, new GallyPageTransformer());
 
+
     }
 
     private void checkUpdate() {
@@ -141,6 +148,10 @@ public class MainActivity extends BaseActivity {
                 Log.d("2333", "onResponse: " + updateentity.getUpdate());
                 if (updateentity.getUpdate() == 1) {
 
+                    getAlldata();
+                }
+                if (!updateentity.isResult()){
+                    getRegdit();
                     getAlldata();
                 }
 
@@ -161,11 +172,14 @@ public class MainActivity extends BaseActivity {
                 if (allData != null) {
                     if (allData.getMessage().equals("该设备为新设备")) {
                         ToastHelper.info(MainActivity.this, "该设备为新设备，请移步后台设置！");
+                        MainPager.setVisibility(View.GONE);
                     } else {
+                        MainPager.setVisibility(View.VISIBLE);
                         loadData(allData);
                         loadViewData(allData);
                     }
                 } else {
+                    MainPager.setVisibility(View.GONE);
                     ToastHelper.info(MainActivity.this, "该文化墙未设置，请移步后台设置！");
                 }
 
@@ -205,67 +219,84 @@ public class MainActivity extends BaseActivity {
     }
 
     private void loadData(AllData alldata) {
+
         freshInitPage();
         viewList.clear();
         pageNumber.clear();
-        switch (alldata.getDevice().getCultureWall().getPage1()) {
-            case "Image":
-                viewList.add(photoInnerLayout);
-                pageNumber.add("Image");
-                break;
-            case "Image_Text":
-                viewList.add(photoTextInnerLayout);
-                pageNumber.add("Image_Text");
-                break;
-            case "Image_Video":
-                viewList.add(photoVideoInnerLayout);
-                pageNumber.add("Image_Video");
-                break;
-        }
-        switch (alldata.getDevice().getCultureWall().getPage2()) {
-            case "Image":
-                viewList.add(photoInnerLayout);
-                pageNumber.add("Image");
-                break;
-            case "Image_Text":
-                viewList.add(photoTextInnerLayout);
-                pageNumber.add("Image_Text");
-                break;
-            case "Image_Video":
-                viewList.add(photoVideoInnerLayout);
-                pageNumber.add("Image_Video");
-                break;
-        }
-        switch (alldata.getDevice().getCultureWall().getPage3()) {
-            case "Image":
-                viewList.add(photoInnerLayout);
-                pageNumber.add("Image");
-                break;
-            case "Image_Text":
-                viewList.add(photoTextInnerLayout);
-                pageNumber.add("Image_Text");
-                break;
-            case "Image_Video":
-                viewList.add(photoVideoInnerLayout);
-                pageNumber.add("Image_Video");
-                break;
+
+        if(alldata.getDevice().getCultureWall()!=null){
+            switch (alldata.getDevice().getCultureWall().getPage1()) {
+                case "Image":
+                    viewList.add(photoInnerLayout);
+                    pageNumber.add("Image");
+                    break;
+                case "Image_Text":
+                    viewList.add(photoTextInnerLayout);
+                    pageNumber.add("Image_Text");
+                    break;
+                case "Image_Video":
+                    viewList.add(photoVideoInnerLayout);
+                    pageNumber.add("Image_Video");
+                    break;
+            }
+            switch (alldata.getDevice().getCultureWall().getPage2()) {
+                case "Image":
+                    viewList.add(photoInnerLayout);
+                    pageNumber.add("Image");
+                    break;
+                case "Image_Text":
+                    viewList.add(photoTextInnerLayout);
+                    pageNumber.add("Image_Text");
+                    break;
+                case "Image_Video":
+                    viewList.add(photoVideoInnerLayout);
+                    pageNumber.add("Image_Video");
+                    break;
+            }
+            switch (alldata.getDevice().getCultureWall().getPage3()) {
+                case "Image":
+                    viewList.add(photoInnerLayout);
+                    pageNumber.add("Image");
+                    break;
+                case "Image_Text":
+                    viewList.add(photoTextInnerLayout);
+                    pageNumber.add("Image_Text");
+                    break;
+                case "Image_Video":
+                    viewList.add(photoVideoInnerLayout);
+                    pageNumber.add("Image_Video");
+                    break;
+            }
+            mainPagerAdapter = new MainPagerAdapter(viewList);
+
+            MainPager.setAdapter(mainPagerAdapter);
+
+            initPage(alldata, pageNumber);
+
+        }else {
+            mainPagerAdapter = new MainPagerAdapter(viewList);
+
+            MainPager.setAdapter(mainPagerAdapter);
+            photoInnerLayout.stopCycle();
+            photoTextInnerLayout.stopCycle();
+            photoVideoInnerLayout.stopCycle();
+            ToastHelper.error(MainActivity.this,"设备类型选择错误！",ToastHelper.LENGTH_LONG,true);
         }
 
-        mainPagerAdapter.setViewlist(viewList);
-        mainPagerAdapter.notifyDataSetChanged();
-        initPage(alldata, pageNumber);
 
     }
 
     public void toNextpage(int page) {
-
-        if (page >= viewList.size()) {
-            MainPager.setCurrentItem(0);
-            setPageCycle(0);
-        } else {
-            MainPager.setCurrentItem(page);
-            setPageCycle(page);
+        if (viewList.size()>0){
+            if (page >= viewList.size()) {
+                MainPager.setCurrentItem(0);
+                setPageCycle(0);
+            } else {
+                MainPager.setCurrentItem(page);
+                setPageCycle(page);
+            }
         }
+
 
     }
 
@@ -321,6 +352,7 @@ public class MainActivity extends BaseActivity {
         topTempcture.setText(allData.getWeather().getResult().getData().getRealtime().getWeather().getTemperature()+"°C\t"
                 +allData.getWeather().getResult().getData().getRealtime().getWeather().getInfo());
         topAir.setText("空气："+allData.getWeather().getResult().getData().getPm25().getPm25().getQuality());
+        if (allData.getSchoolButtomNotifyList().size()>0)
         margueeTextview.setText(allData.getSchoolButtomNotifyList().get(0).getContent());
     }
     public void initDateTime(){
@@ -352,5 +384,60 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void initclick(){
+        topChangeskin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddPopWindow morePopWindow = new AddPopWindow(MainActivity.this, new MainChangeSkinExcute() {
+                    @Override
+                    public void change2Blue() {
+                        mainlayout.setBackgroundResource(R.mipmap.background_b);
+                    }
 
+                    @Override
+                    public void change2Red() {
+                        mainlayout.setBackgroundResource(R.mipmap.background_r);
+                    }
+
+                    @Override
+                    public void change2Yellow() {
+                        mainlayout.setBackgroundResource(R.mipmap.background_y);
+                    }
+
+                    @Override
+                    public void change2Puper() {
+                        mainlayout.setBackgroundResource(R.mipmap.background_p);
+                    }
+
+                    @Override
+                    public void change2Green() {
+                        mainlayout.setBackgroundResource(R.mipmap.background_g);
+                    }
+
+                    @Override
+                    public void change2Orgin() {
+                        mainlayout.setBackgroundResource(R.mipmap.background_o);
+                    }
+                });
+                morePopWindow.showPopupWindow(topChangeskin);
+
+            }
+        });
+    }
+    private void getRegdit(){
+        HttpCilent.regDevice(new Callback<RegEntity>() {
+            @Override
+            public void onResponse(Call<RegEntity> call, Response<RegEntity> response) {
+                if (response!=null){
+                   // getDevice();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RegEntity> call, Throwable t) {
+                Log.d("2333", "onFailure: "+t.toString());
+            }
+        },MainActivity.this);
+    }
 }

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,6 +30,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.zonlinks.giantbing.guangzhouboard.C.CacheSAVEPATH;
+import static com.zonlinks.giantbing.guangzhouboard.C.INNERPAGERFREASHITME;
+import static com.zonlinks.giantbing.guangzhouboard.C.MAINPAGERFREASHITME;
+import static com.zonlinks.giantbing.guangzhouboard.C.VIDEOPAGERFREASHITME;
 
 /**
  * Created by P on 2017/8/30.
@@ -37,7 +41,7 @@ import static com.zonlinks.giantbing.guangzhouboard.C.CacheSAVEPATH;
 public class PhotoVideoInnerLayout extends RelativeLayout {
 
     @BindView(R.id.videoinnerpager)
-    ViewPager videoinnerpager;
+    NotToouchPager videoinnerpager;
     @BindView(R.id.videoplayer)
     ListGSYVideoPlayer videoplayer;
     private MainPagerAdapter mainPagerAdapter;
@@ -66,7 +70,7 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
             videoinnerpager.setCurrentItem(currentIndex);
             currentIndex++;
             //递归循环，图片切换速度3秒一张
-            handler.postDelayed(this, 3000);
+            handler.postDelayed(this, INNERPAGERFREASHITME);
         }
     };
 
@@ -106,10 +110,7 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
 
     public void loadData(List<AllData.SchoolCultureWallListBean> SchoolCultureWallList, List<AllData.SchoolVideoCultureWallListBean> videoCultureWallListBeen, int position) {
        this.videoCultureWallListBeen = videoCultureWallListBeen;
-        if (position == 0)
-            startCycle();
-        else
-            stopCycle();
+
         mainPosition = position;
         viewList.clear();
         for (AllData.SchoolCultureWallListBean cultureWallListBean : SchoolCultureWallList) {
@@ -122,6 +123,10 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
         }
         mainPagerAdapter = new MainPagerAdapter(viewList);
         videoinnerpager.setAdapter(mainPagerAdapter);
+        if (position == 0)
+            startCycle();
+        else
+            stopCycle();
     }
 
     private void initview() {
@@ -132,25 +137,8 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
         viewList = new ArrayList<>();
         videoinnerpager.setOffscreenPageLimit(3);
 
-        videoinnerpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == viewList.size() - 1) {
 
 
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
     /**
      * 此方法会在所有的控件都从xml文件中加载完成后调用
@@ -219,7 +207,6 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
                     @Override
                     public void onAutoComplete(String url, Object... objects) {
                         // TODO: 2017/9/4
-                        ToastHelper.success(context, "woyaoxiayiyela!");
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -227,7 +214,7 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
                                 freshView();
                                 stopCycle();
                             }
-                        }, 3000);
+                        }, VIDEOPAGERFREASHITME);
                     }
 
                     @Override
@@ -268,6 +255,34 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
                     @Override
                     public void onPlayError(String url, Object... objects) {
                         // gsyVideoPlayer.setVisibility(View.GONE);
+                        ToastHelper.error(context,"视屏地址失效！");
+                        videoinnerpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                            @Override
+                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                            }
+
+                            @Override
+                            public void onPageSelected(int position) {
+                                if (position == viewList.size() - 1) {
+
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ExcutLisnner.toNextPage(mainPosition + 1);
+                                            freshView();
+                                            stopCycle();
+                                        }
+                                    }, MAINPAGERFREASHITME);
+                                }
+                            }
+
+                            @Override
+                            public void onPageScrollStateChanged(int state) {
+
+                            }
+                        });
+
                     }
 
                     @Override
@@ -282,6 +297,45 @@ public class PhotoVideoInnerLayout extends RelativeLayout {
 
                     @Override
                     public void onClickBlankFullscreen(String url, Object... objects) {
+
+                    }
+                });
+            }else {
+                ToastHelper.error(context,"视屏地址未添加！");
+                if(viewList.size()==1){
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ExcutLisnner.toNextPage(mainPosition+1);
+                            freshView();
+                            stopCycle();
+                        }
+                    },MAINPAGERFREASHITME);
+                }
+                videoinnerpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        if (position == viewList.size() - 1) {
+
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ExcutLisnner.toNextPage(mainPosition + 1);
+                                    freshView();
+                                    stopCycle();
+                                }
+                            }, MAINPAGERFREASHITME);
+                        }
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
 
                     }
                 });

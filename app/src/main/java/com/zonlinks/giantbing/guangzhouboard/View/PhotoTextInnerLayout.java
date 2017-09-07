@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,6 +25,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.zonlinks.giantbing.guangzhouboard.C.INNERPAGERFREASHITME;
+import static com.zonlinks.giantbing.guangzhouboard.C.MAINPAGERFREASHITME;
+
 /**
  * Created by P on 2017/8/30.
  */
@@ -31,7 +35,7 @@ import butterknife.ButterKnife;
 public class PhotoTextInnerLayout extends RelativeLayout {
 
     @BindView(R.id.textinnerPager)
-    ViewPager textinnerPager;
+    NotToouchPager textinnerPager;
     @BindView(R.id.text_pager_title)
     TextView textPagerTitle;
     @BindView(R.id.text_pager_content)
@@ -63,7 +67,7 @@ public class PhotoTextInnerLayout extends RelativeLayout {
             textinnerPager.setCurrentItem(currentIndex);
             currentIndex++;
             //递归循环，图片切换速度3秒一张
-            handler.postDelayed(this, 3000);
+            handler.postDelayed(this, INNERPAGERFREASHITME);
 
         }
     };
@@ -79,6 +83,16 @@ public class PhotoTextInnerLayout extends RelativeLayout {
     public void startCycle() {
         handler.post(cycleRunnable);
         initText(cultureWallTextListBeen);
+        if(viewList.size()==1){
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ExcutLisnner.toNextPage(mainPosition+1);
+                    freshView();
+                    stopCycle();
+                }
+            },MAINPAGERFREASHITME);
+        }
     }
 
     public void stopCycle() {
@@ -89,6 +103,9 @@ public class PhotoTextInnerLayout extends RelativeLayout {
     public void freshView() {
         currentIndex = 0;
         textinnerPager.setCurrentItem(currentIndex);
+        textPagerTitle.setText("");
+        textPagerTime.setText("");
+        textPagerContent.setText("后台未设置！");
     }
 
     public PhotoTextInnerLayout(Context context, ViewGroup viewGroup, Handler handler, MainPagerExcute ExcutLisnner) {
@@ -140,7 +157,6 @@ public class PhotoTextInnerLayout extends RelativeLayout {
             @Override
             public void onPageSelected(int position) {
                 if (position == viewList.size() - 1) {
-                    ToastHelper.success(context, "woyaoxiayiyela!");
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -148,7 +164,7 @@ public class PhotoTextInnerLayout extends RelativeLayout {
                             freshView();
                             stopCycle();
                         }
-                    }, 3000);
+                    }, MAINPAGERFREASHITME);
 
                 }
             }
@@ -158,6 +174,7 @@ public class PhotoTextInnerLayout extends RelativeLayout {
 
             }
         });
+
     }
     public void initText(List<AllData.SchoolCultureWallTextListBean> cultureWallTextListBeen){
 

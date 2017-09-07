@@ -25,6 +25,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.zonlinks.giantbing.guangzhouboard.C.INNERPAGERFREASHITME;
+import static com.zonlinks.giantbing.guangzhouboard.C.MAINPAGERFREASHITME;
+
 /**
  * Created by P on 2017/8/30.
  */
@@ -32,7 +35,7 @@ import butterknife.ButterKnife;
 public class PhotoInnerLayout extends RelativeLayout {
 
     @BindView(R.id.photoinnerpager)
-    ViewPager photoinnerpager;
+    NotToouchPager photoinnerpager;
     private MainPagerAdapter mainPagerAdapter;
     private List<View> viewList;
     private ViewGroup viewGroup;
@@ -58,7 +61,7 @@ public class PhotoInnerLayout extends RelativeLayout {
                 currentIndex++;
                 //递归循环，图片切换速度3秒一张
 
-            handler.postDelayed(this, 3000);
+            handler.postDelayed(this, INNERPAGERFREASHITME);
         }
     };
 
@@ -73,6 +76,16 @@ public class PhotoInnerLayout extends RelativeLayout {
 
     public void startCycle(){
         handler.post(cycleRunnable);
+        if(viewList.size()==1){
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ExcutLisnner.toNextPage(mainPosition+1);
+                    freshView();
+                    stopCycle();
+                }
+            },MAINPAGERFREASHITME);
+        }
     }
     public void stopCycle(){
         handler.removeCallbacks(cycleRunnable);
@@ -92,13 +105,7 @@ public class PhotoInnerLayout extends RelativeLayout {
     }
 
     public void loadData(List<AllData.SchoolCultureWallListBean> SchoolCultureWallList,int position){
-        if (position==0){
-            startCycle();
-        }
 
-        else{
-            stopCycle();
-        }
 
         mainPosition = position;
         viewList.clear();
@@ -112,6 +119,13 @@ public class PhotoInnerLayout extends RelativeLayout {
         }
         mainPagerAdapter = new MainPagerAdapter(viewList);
         photoinnerpager.setAdapter(mainPagerAdapter);
+        if (position==0){
+            startCycle();
+        }
+
+        else{
+            stopCycle();
+        }
 
     }
     private void initview() {
@@ -132,7 +146,6 @@ public class PhotoInnerLayout extends RelativeLayout {
             @Override
             public void onPageSelected(int position) {
                 if (position==viewList.size()-1){
-                    ToastHelper.success(context,"woyaoxiayiyela!");
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -140,7 +153,7 @@ public class PhotoInnerLayout extends RelativeLayout {
                             freshView();
                             stopCycle();
                         }
-                    },3000);
+                    },MAINPAGERFREASHITME);
 
                 }
             }

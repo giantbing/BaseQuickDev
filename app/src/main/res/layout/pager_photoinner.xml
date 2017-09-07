@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/alfa">
-    <android.support.v4.view.ViewPager
+    <com.zonlinks.giantbing.guangzhouboard.View.NotToouchPager
         android:id="@+id/photoinnerpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:clipChildren="false"
-        android:background="@color/black"/>
+        android:background="@color/black"
+        android:clickable="false"/>
 </RelativeLayout>

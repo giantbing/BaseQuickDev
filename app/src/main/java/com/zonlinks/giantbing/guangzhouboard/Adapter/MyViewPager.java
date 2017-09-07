@@ -1,4 +1,4 @@
-package com.zonlinks.giantbing.guangzhouboard.View.Pager;
+package com.zonlinks.giantbing.guangzhouboard.Adapter;
 
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
