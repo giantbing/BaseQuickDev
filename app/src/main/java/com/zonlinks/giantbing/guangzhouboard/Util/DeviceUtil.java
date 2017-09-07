@@ -17,6 +17,10 @@ import com.zonlinks.giantbing.guangzhouboard.C;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 
 /**
@@ -112,6 +116,28 @@ public class DeviceUtil  {
         context.startActivityForResult(intent, C.TAKE_PHOTO); //启动照相
         //拍完照startActivityForResult() 结果返回onActivityResult()函数
         return outputImage.getPath();
+    }
+
+    //获取本机的ip地址
+    public static String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface
+                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf
+                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress()) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+
+
+        return null;
     }
 }
 

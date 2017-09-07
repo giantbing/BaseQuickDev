@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">GuangZhouBoard</string>
+    <string name="app_name">校园看板</string>
+    <string name="defaulttext">-</string>
+    <string name="bottom_speacker">校园通知</string>
 </resources>

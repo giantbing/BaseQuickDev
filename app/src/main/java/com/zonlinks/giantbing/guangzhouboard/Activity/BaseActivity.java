@@ -17,12 +17,12 @@ import com.zonlinks.giantbing.guangzhouboard.Util.Permission.PermissionReq;
 
 public abstract class BaseActivity extends Activity {
     protected Handler mHandler = new Handler(Looper.getMainLooper());
-
+    protected Runnable statnable;
     protected SharedPreferences prefs = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = getSharedPreferences("classroom.zonlinks.com.classroom", MODE_PRIVATE);
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
   }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
